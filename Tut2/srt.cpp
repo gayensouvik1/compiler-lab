@@ -26,18 +26,19 @@ enum INPUT{
 	fin_timeout,
 	receivefinack,
 	finmaxretryexceed
-}
+};
 
 class server{
 
 	public:
+
 		void receive_SYN();
 
 		void send_SYNACK();
+
 		void receive_FIN();
 
 		void send_FINACK();
-
 
 };
 
@@ -56,7 +57,7 @@ class client{
 		STATES next_state(STATES current,int input){
 
 			if(input==srt_client_connect && current==CLOSED){
-				current=SYNSENT;
+				current = SYNSENT;
 				send_SYN();
 			}
 			if(input==syn_timeout && current==SYNSENT){
@@ -112,11 +113,16 @@ void client::send_SYN(){
 
 void server::receive_SYN(void){	
 	cout << "receiving SYN"<<endl;
-
+	s->send_SYNACK();
 }
 
-void server:: receive_FIN(void){
-	cout << "receiving FIN"<<endl;
+void server::send_SYNACK(void){	
+	cout << "sending SYNACK"<<endl;
+	c->receive_SYNACK();
+}
+
+void client::receive_SYNACK(){
+	cout << "receiving SYNACK"<<endl;
 }
 
 void client::send_FIN(){
@@ -124,16 +130,19 @@ void client::send_FIN(){
 	s->receive_FIN();
 }
 
+void server::receive_FIN(void){	
+	cout << "receiving FIN"<<endl;
+	s->send_FINACK();
+}
 
+void server::send_FINACK(void){	
+	cout << "sending FINACK"<<endl;
+	c->receive_FINACK();
+}
 
-void client::receive_SYNACK(){
-			s->send_SYNACK();
-			cout << "receiving SYNACK"<<endl;
-		}
 void client::receive_FINACK(){
-			s->send_FINACK();
-			cout << "receiving FINACK"<<endl;
-		}
+	cout << "receiving FINACK"<<endl;
+}
 
 int main(){
 
